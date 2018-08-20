@@ -120,6 +120,8 @@ function findPriorityEntryInSuggestionArray(suggestionsArray){
 //returs the suggestion list depending on the user input i.e value
 function getSuggestions(value) {
 
+  //console.log("searchList-suggestions:",searchList);
+  //let languages = searchList;
   const escapedValue = escapeRegexCharacters(value.trim());
   if (escapedValue === '') {
     return [];
@@ -154,8 +156,8 @@ export default class Example extends Component {
 //noSuggestion: boolean value
 //true: when the user input yeilds an empty suggestion list
 //isSelectSuggestion: true when user makes a selection from the suggestion list(either through keyboard or mouse click)
-let airlines  =  this.props.data.airlines;
-console.log("airlines: ",airlines);
+let searchList  =  this.props.data.searchList;
+console.log("searchList:",searchList);
 
 
     this.state = {
@@ -163,6 +165,7 @@ console.log("airlines: ",airlines);
       suggestions: [],
       noSuggestions: false,
       isSelectSuggestion:false,
+      searchList: this.props.data.searchList,
       lat:28.53823,
       lon: -81.37739
     };
@@ -267,17 +270,18 @@ selectValueCallBack= (state,method) =>{
      if(e.key === 'Enter') {
        console.log("onEnterPress");
        this.selectValueCallBack(this.state,"Enter");
-   }
-}
+     }
+  }
 
 
 
 
 // the function to fetch suggestion list
 //it also decides whether user input is valid else set flag noSuggestions
-  onSuggestionsFetchRequested = ({ value }) => {
+  onSuggestionsFetchRequested = ({ value }, callback) => {
     console.log("OSR:value:",value)
     const suggestions = getSuggestions(value);
+    console.log('suggestions', suggestions);
     const isInputBlank = value.trim() === '';
     const noSuggestions = !isInputBlank && suggestions.length === 0;
 
@@ -291,8 +295,12 @@ selectValueCallBack= (state,method) =>{
     this.setState({
       suggestions,
       noSuggestions
+    },  () => {
+      if(callback){
+        callback()
+      }
     });
-   console.log("Fetching suggestions:",this.state.suggestions);
+//()=> console.log("Fetching suggestions:",this.state.suggestions)
    //console.log("Calc Nosuggestions:",noSuggestions);
    //console.log('Nosuggestions:',this.state.noSuggestions);
    //console.log('Selection:',this.state.isSelectSuggestion);
@@ -300,9 +308,12 @@ selectValueCallBack= (state,method) =>{
 
 
   //Callback for whenever user clicks the searchIcon
-    onClickHandleEvent = (e) => {
-
-      let value = this.state.value;
+  onClickHandleEvent = (e) => {
+    console.log('icon click');
+    this.onSuggestionsFetchRequested({value: this.state.value},
+    this.selectValueCallBack(this.state,"SearchIcon"));
+      //this.selectValueCallBack(this.state,"SearchIcon");
+      /*let value = this.state.value;
       const suggestions = getSuggestions(value);
       const isInputBlank = value.trim() === '';
       const noSuggestions = !isInputBlank && suggestions.length === 0;
@@ -322,8 +333,8 @@ selectValueCallBack= (state,method) =>{
 
       console.log("onClickSearchIcon:",this.state.suggestions);
       console.log("onClickSearchIcon:",suggestions);
-      //this.onSuggestionsFetchRequested(this.state.value);
-      this.selectValueCallBack(this.state,"SearchIcon");
+      //this.onSuggestionsFetchRequested(this.state.value);*/
+
 
   }
 
