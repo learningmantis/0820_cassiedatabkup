@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Example from './Example';
+import Searchbar from './Searchbar';
 
 
 let airlinesList = {
@@ -267,8 +267,8 @@ export default class DataExtract extends Component{
         let flightobj ={};
         flightobj.name = flight.guid;
         flightobj.type = 'flight';
-				flightobj.lat = flight.position.latitude;
-				flightobj.lon = flight.position.longitude;
+				flightobj.latitude = flight.position.latitude;
+				flightobj.longitude = flight.position.longitude;
         flightobj.searchstr = flight.guid;					//search string
         //console.log("flightobj:",flightobj);
         js_flights.push(flightobj);
@@ -294,8 +294,8 @@ consolefun(){
 		//In this.parseData() replace each list with it's counter parts i.e this.props.airlines etc...
     this.setState({
 			searchList: this.parseData(airlinesList,airportsList,flightsList),
-			activeAirportLat:32.897480,
-			activeAirportLon:-97.040443
+			activeAirport_Latitude:32.897480,
+			activeAirport_Longitude:-97.040443
 		});
 
  }
@@ -305,7 +305,7 @@ consolefun(){
 
     //console.log("hi",this.state);
     return(
-      <Example data={this.state} />
+      <Searchbar data={this.state} />
     );
   }
 
